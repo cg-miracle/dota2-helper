@@ -1,0 +1,54 @@
+$white: #fff;
+$black: #1F2D3D;
+$lightBlue: #58B7FF;
+$navBarH: 45px;//上导航栏
+$toolbarH: 60px;//底部工具栏
+
+/*添加css3前缀*/
+@mixin prefix($property,$value){
+  -webkit-#{$property}: $value;
+  -moz#{$property}: $value;
+  #{$property}: $value
+}
+
+@mixin radius($value){
+  @include prefix(border-radius,$value)
+}
+
+@mixin blur($value){
+  @include prefix(filter,$value)
+}
+
+body{
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+
+.container{
+  padding-top: $navBarH;
+}
+
+.scrollHide{
+  height: 100%;
+  overflow: hidden
+}
+
+.pull-right{
+  float: right;
+}
+
+#app{
+height: 100%;
+}
+
+//清除浮动
+.clearfix:after{
+  content: ' ';
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  clear: both;
+  height: 0;
+}
+.clearfix {
+  *zoom: 1;
+}

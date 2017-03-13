@@ -1,0 +1,24 @@
+$fontS: 30px;
+$mt: 300px;
+#landing{
+    height: 100%;
+        background-image: url('../images/indexImg.jpg');
+        background-repeat: no-repeat;
+        background-size: cover; 
+        background-position: center;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        .landing-inner{
+            font-weight: bold;
+            color: $white;
+            padding-top: $mt;
+            .app-title{
+                font-size: $fontS;
+            }
+            .version-p{
+                font-size: $fontS/1.5; 
+            }
+        }   
+    
+}
