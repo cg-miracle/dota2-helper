@@ -9,6 +9,8 @@
 
 <script>
 require('../assets/scss/app.scss')
+require('../assets/scss/font/iconfont.css')
+
 export default {
   mounted () {
     setTimeout(() => {
