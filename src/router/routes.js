@@ -10,6 +10,11 @@ const News = resolve => {
   })
 }
 
+const Heros = resolve => {
+  require.ensure(['../page/heros.vue'], () => {
+    resolve(require('../page/heros.vue'))
+  })
+}
 const routers = [{
   path: '/',
   name: 'home',
@@ -18,6 +23,10 @@ const routers = [{
   path: '/news',
   name: 'news',
   component: News
+}, {
+  path: '/heros',
+  name: 'heros',
+  component: Heros
 }, {
   path: '*',
   component: Home

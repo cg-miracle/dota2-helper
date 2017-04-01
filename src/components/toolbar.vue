@@ -1,27 +1,27 @@
 <template>
     <footer id="toolbar">
       <ul class="bars">
-        <li class="item">
+        <li class="item " @click="pushTo('news')" :class="{'active':type === '大厅'}">
           <div class="item-inner">
-            <i class="iconfont icon-shipin"></i>
+            <i class="iconfont icon-wxbzhuye"></i>
             <span>大厅</span>
+          </div>
+        </li>
+         <li class="item" @click="pushTo('heros')" :class="{'active':type === '英雄'}">
+          <div class="item-inner" > 
+            <i class="iconfont icon-iconfonthuangguan"></i>
+              <span>英雄</span>           
           </div>
         </li>
          <li class="item">
          <div class="item-inner">
-           <i class="iconfont icon-yxlm"></i>
-            <span>英雄</span>           
-         </div>
-        </li>
-         <li class="item">
-         <div class="item-inner">
-             <i class="iconfont icon-wanjiaqushi"></i>
+             <i class=" iconfont icon-account"></i>
             <span>好友</span>             
          </div>
         </li>
         <li class="item">
         <div class="item-inner">
-               <i class="iconfont icon-guanyu"></i>
+               <i class="iconfont icon-prompt"></i>
               <span>关于</span>               
         </div>
         </li>
@@ -37,9 +37,13 @@
       }
     },
     props: {
-      pageType: String,
+      type: String,
       fix: Boolean
-
+    },
+    methods: {
+      pushTo: function (n) {
+        this.$router.push({name: n})
+      }
     }
   }
 </script>
@@ -51,6 +55,10 @@
     right: 0;
     bottom: 0;
     height: $toolbarH;
+    border: 1px solid $lightGray;
+    box-shadow: 0 0 4px rgba(0,0,0,0.25);
+    z-index: 10;
+    background-color: $white;
    .bars{
      display: flex;
      height: 100%;
@@ -61,14 +69,23 @@
        .item-inner{
           height: 100%;
           display: flex;
+          flex-direction: column;
           justify-content: center;
-          align-items: center;
+          align-items: center ;
+          color: $Silver;
+          font-size: 14px;
           .iconfont{
-            color: $lightGray;
-            font-size: 14px;
+            font-size: 17px;
           }
+         
        }
      }
+    .active .iconfont{
+      color: $DarkBlue;
+    }
+    .active span{
+      color: $ShitYellow;
+    }
    }
 }
  

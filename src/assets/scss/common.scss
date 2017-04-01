@@ -1,11 +1,15 @@
 $white: #fff;
 $black: #1F2D3D;
+$DarkBlue: #1D8CE0;
+$Blue: #20A0FF;
 $lightBlue: #58B7FF;
 $lightGray: #E5E9F2;
+$Silver: #8492A6;
 $ExtraLightGray: #EFF2F7;
+$ShitYellow: #F7BA2A;
 $navBarH: 45px;//上导航栏
 $toolbarH: 50px;//底部工具栏
-
+$padd-10: 10px;
 /*添加css3前缀*/
 @mixin prefix($property,$value){
   -webkit-#{$property}: $value;

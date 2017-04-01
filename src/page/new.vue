@@ -9,7 +9,7 @@
         </el-carousel-item>
     </el-carousel>
   </div>
-  <tb></tb>
+  <tb type='大厅'></tb>
 </div>
 </template>
 

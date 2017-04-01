@@ -5,11 +5,12 @@ import VueRouter from 'vue-router'
 import routes from './router/routes'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
-
+import Axios from 'axios'
 Vue.config.productionTip = false
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
+Vue.use(Axios)
 // 实例化VueRorouter
 const router = new VueRouter({
   mode: 'history',
@@ -25,4 +26,5 @@ new Vue({
 *banner1 http://pvp.qq.com/v/detail.shtml?G_Biz=18&tid=111311&e_code=undefined.undefined.undefined
 *2 http://pvp.qq.com/v/detail.shtml?G_Biz=18&tid=112026&e_code=undefined.undefined.undefined
 *http://pvp.qq.com/v/detail.shtml?G_Biz=18&tid=111699&e_code=undefined.undefined.undefined
+
 */
