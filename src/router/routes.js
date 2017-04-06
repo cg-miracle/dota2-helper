@@ -15,6 +15,13 @@ const Heros = resolve => {
     resolve(require('../page/heros.vue'))
   })
 }
+
+const HeroDetail = resolve => {
+  require.ensure(['../page/heroDetail.vue'], () => {
+    resolve(require('../page/heroDetail.vue'))
+  })
+}
+
 const routers = [{
   path: '/',
   name: 'home',
@@ -27,6 +34,10 @@ const routers = [{
   path: '/heros',
   name: 'heros',
   component: Heros
+}, {
+  path: '/hero/:id',
+  name: 'heroDetail',
+  component: HeroDetail
 }, {
   path: '*',
   component: Home
