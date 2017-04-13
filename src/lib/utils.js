@@ -2,7 +2,7 @@ var config = {
   token: '966EF-6696F-966F9-9461E',
   hero_img: 'http://cdn.tgp.qq.com/kog/v3/images/heroPortrait/', // {hero_img_id}.png'
   'heroicon': 'http://cdn.tgp.qq.com/kog/v3/images/hero/',
-  '技能图标': 'http://cdn.tgp.qq.com/kog/v3/images/skillIcon/{技能ID}.png',
+  'skillicon': 'http://cdn.tgp.qq.com/kog/v3/images/skillIcon/', // {技能ID}.png'
   '英雄卡片': 'http://cdn.tgp.qq.com/kog/v3/images/heroCard/{hero_id}.jpg',
   '装备图标': 'http://cdn.tgp.qq.com/kog/v3/images/equipment/{装备ID}.png',
   '战队图标': 'http://cdn.tgp.qq.com/kog/v3/images/teamRating/{战队ID}.png',
@@ -42,11 +42,28 @@ exports.getLastTimeStr = diff => {
   return content
 }
 
+/**
+ * obj 图片id
+ * 返回英雄图片
+ */
 exports.getImgUrl = obj => {
   return config.hero_img + obj + '.png'
 }
 
+/**
+ * obj 图片id
+ * 返回英雄头像
+ */
 exports.getImgUrlicon = obj => {
   return config.heroicon + obj + '.png'
 }
+
+/**
+ * obj 图片id
+ * 返回技能图标
+ */
+exports.getskillicon = obj => {
+  return config.skillicon + obj + '.png'
+}
+
 exports.config = config
