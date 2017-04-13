@@ -13,13 +13,13 @@
               <span>英雄</span>           
           </div>
         </li>
-         <li class="item">
+         <li class="item" @click="pushTo('friends')" :class="{'active':type === '好友'}">
          <div class="item-inner">
              <i class=" iconfont icon-account"></i>
             <span>好友</span>             
          </div>
         </li>
-        <li class="item">
+        <li class="item" >
         <div class="item-inner">
                <i class="iconfont icon-prompt"></i>
               <span>关于</span>               

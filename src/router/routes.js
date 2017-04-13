@@ -22,6 +22,12 @@ const HeroDetail = resolve => {
   })
 }
 
+const Friends = resolve => {
+  require.ensure(['../page/friends.vue'], () => {
+    resolve(require('../page/friends.vue'))
+  })
+}
+
 const routers = [{
   path: '/',
   name: 'home',
@@ -38,6 +44,10 @@ const routers = [{
   path: '/hero/:id',
   name: 'heroDetail',
   component: HeroDetail
+}, {
+  path: '/friends',
+  name: 'friends',
+  component: Friends
 }, {
   path: '*',
   component: Home
