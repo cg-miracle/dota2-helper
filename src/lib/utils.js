@@ -1,5 +1,5 @@
 var config = {
-  token: '966EF-6696F-966F9-9461E',
+  token: '0DE0B-AC38A-EDAEA-0AD0A',
   hero_img: 'http://cdn.tgp.qq.com/kog/v3/images/heroPortrait/', // {hero_img_id}.png'
   'heroicon': 'http://cdn.tgp.qq.com/kog/v3/images/hero/',
   'skillicon': 'http://cdn.tgp.qq.com/kog/v3/images/skillIcon/', // {技能ID}.png'

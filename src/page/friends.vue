@@ -1,14 +1,13 @@
 <template>
   <div class="container">
-    <hd page-type="好友"
-       :isBack='true'></hd>
+    <hd page-type="好友"></hd>
     <section id='friends'>
       <div class='search-bar'>
         <input v-focus  v-model='username' placeholder='请输入召唤师名' type="text" class='search-input' >
         <span class='search-btn' @click="getUsers">搜索</span>
       </div>
       <div class='content-body'>
-          <div>
+          <div class='tips-area'>
             <img src='../assets/images/acer2.gif'>
             <p>{{tips}}</p>
           </div>
@@ -30,7 +29,7 @@ export default {
       herodatas: [],
       imgurl: '',
       username: '',
-      tips: ''
+      tips: '请输入你要查找的召唤师'
     }
   },
   filters: {
@@ -40,7 +39,7 @@ export default {
   },
   methods: {
     getUsers () {
-      let key = encodeURI(this.username)
+      let key = this.username // encodeURI(this.username)
       axios({
         method: 'get',
         url: 'http://kogapi.games-cube.com/UserArea?keyword=' + key,
@@ -49,9 +48,7 @@ export default {
         }
       }).then((res) => {
         if (res.data.msg === 'ok') {
-          var d = res.data
-          this.herodatas = d
-          window.localStorage.setItem('heros', JSON.stringify(d.data))
+          console.log(res.data)
         }
       }).catch((err) => {
         console.log(err)
@@ -103,6 +100,11 @@ $searchBarH: 40px;
   .content-body{
     display: flex;
     justify-content: center;
+    .tips-area{
+      margin-top: 50px;
+      text-align: center;
+      color: $Silver;
+    }
   }
 }
 </style>
