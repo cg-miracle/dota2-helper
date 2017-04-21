@@ -42,7 +42,7 @@
     width: 100%;
     height: $navBarH;
     line-height: $navBarH;
-    background-color: $lightBlue;
+    background-color: $Black;
     text-align: center;
     color: $white;
     &.fix{

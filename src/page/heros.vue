@@ -3,13 +3,13 @@
     <hd page-type="英雄"></hd>
     <section id='heros' class='list-wrap'>
     <div class="title">
-     <span class='co-9a3'>ALL</span>OF<span class='co-b7d'>HREOS</span>
+     <span class='co-9a3'>ALL</span>OF<span class='co-b7d'>HEROS</span>
     </div>
-      <div v-for='hero in herodatas' class='hero-item' @click="toheroDetail(hero.hero_id,hero.hero_img_id)">
+      <div v-for='hero in herodatas' class='hero-item' @click="toheroDetail(hero.id,hero.name)">
         <div class="img-wrap">
-          <img :src="getImg(hero.hero_img_id)" alt="英雄图标" class='hero-img'>
+          <img :src="getImg(hero.name)" alt="英雄图标" class='hero-img'>
         </div>
-        <span>{{hero.hero_name}}</span>
+        <span>{{hero.localized_name}}</span>
       </div>
     </section>
     <tb type='英雄'></tb>
@@ -26,7 +26,8 @@ export default {
   data () {
     return {
       herodatas: [],
-      imgurl: ''
+      imgurl: '',
+      heroImg: ''
     }
   },
   filters: {
@@ -38,31 +39,34 @@ export default {
   methods: {
     getHeros () {
       var d = window.localStorage.getItem('heros')
-      console.log(JSON.parse(d)[0])
-      this.herodatas = JSON.parse(d)
       if (!d) {
         axios({
           method: 'get',
-          url: 'http://kogapi.games-cube.com/champion',
-          headers: {
-            'DAIWAN-API-TOKEN': util.config.token
-          }
+          url: '/api/IEconDOTA2_570/GetHeroes/v1?key=' + util.config.dota2_token + '&language=zh'
         }).then((res) => {
-          if (res.data.msg === 'ok') {
-            var d = res.data
-            this.herodatas = d
-            window.localStorage.setItem('heros', JSON.stringify(d.data))
+          if (res.data.result.status === 200) {
+            var d = res.data.result
+            this.herodatas = d.heroes
+            console.log(this.herodatas)
+            window.localStorage.setItem('heros', JSON.stringify(d))
           }
         }).catch((err) => {
           console.log(err)
         })
+      } else {
+        this.herodatas = JSON.parse(d).heroes
       }
     },
-    toheroDetail (id, imgid) {
-      this.$router.push({name: 'heroDetail', params: {id: id, imgid: imgid}})
+    // 跳转详情页
+    toheroDetail (id, heroname) {
+      this.$router.push({name: 'heroDetail', params: {id: id, heroname: heroname}})
     },
-    getImg (obj) {
-      return util.getImgUrl(obj)
+    // 获得英雄头像地址
+    getImg (fullName) {
+      return util.getHeroAvatar(this.getRealName(fullName), 'vert')
+    },
+    getRealName (name) {
+      return name.replace('npc_dota_hero_', '')
     }
   },
   components: {

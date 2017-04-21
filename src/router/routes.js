@@ -28,6 +28,12 @@ const Friends = resolve => {
   })
 }
 
+const UserDetail = resolve => {
+  require.ensure(['../page/userDetail.vue'], () => {
+    resolve(require('../page/userDetail.vue'))
+  })
+}
+
 const routers = [{
   path: '/',
   name: 'home',
@@ -48,6 +54,10 @@ const routers = [{
   path: '/friends',
   name: 'friends',
   component: Friends
+}, {
+  path: '/userDetail',
+  name: 'userDetail',
+  component: UserDetail
 }, {
   path: '*',
   component: Home

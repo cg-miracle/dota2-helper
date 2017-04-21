@@ -5,6 +5,7 @@ $Blue: #20A0FF;
 $lightBlue: #58B7FF;
 $lightGray: #E5E9F2;
 $Silver: #8492A6;
+$LightSilver: #99A9BF;
 $ExtraLightGray: #EFF2F7;
 $ShitYellow: #F7BA2A;
 $navBarH: 45px;//上导航栏
@@ -31,6 +32,7 @@ body{
 
 .container{
   padding-top: $navBarH;
+  height: 100%;
 }
 
 .scrollHide{

@@ -83,12 +83,9 @@
     methods: {
       getHero () {
         var heroid = this.$route.params.id
-        this.heroimg = this.$route.params.imgid
+        this.heroname = this.$route.params.heroname
         var d = window.localStorage.getItem(heroid)
-        this.hero = JSON.parse(d)[0]
-        this.skills = this.hero.skill_list
-        this.runes = this.hero.rune_list
-        this.css('#hero-bg::before{background-image: url(' + this.getImg(this.heroimg) + ')}')
+        this.css('#hero-bg::before{background-image: url(' + this.getImg(this.heroname) + ')}')
         console.log(this.hero)
         if (!d) {
           axios({
@@ -101,11 +98,13 @@
             if (res.data.msg === 'ok') {
               var d = res.data
               this.hero = d
-              window.localStorage.setItem(heroid, JSON.stringify(d.data))
+              window.localStorage.setItem(this.heroname, JSON.stringify(d.data))
             }
           }).catch((err) => {
             console.log(err)
           })
+        } else {
+          this.hero = JSON.parse(d)
         }
       },
       changetype (str) {
@@ -115,8 +114,8 @@
           this.isselected = false
         }
       },
-      getImg (obj) {
-        return util.getImgUrl(obj)
+      getImg (fullName) {
+        return util.getHeroAvatar(this.getRealName(fullName), 'vert')
       },
       getAvatar (obj) {
         return util.getImgUrlicon(obj)
