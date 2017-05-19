@@ -1,3 +1,6 @@
+var Long = require('long')
+var axios = require('axios')
+
 var config = {
   dota2_token: '4EC45E0F6BB0435E586BC369FABDBAA2',
   token: '546FA-9D53D-45524-3225E',
@@ -44,4 +47,75 @@ exports.getHeroAvatar = (name, suffix) => {
   return config.hero_img + name + suffix
 }
 
+/**
+ * dota数字id 转steamid
+ */
+exports.dotaidToSteamid = (dotaid) => {
+  return Long.fromString(dotaid).add('76561197960265728').toString()
+}
+
+/**
+ * steamid 转dota数字id
+ */
+exports.steamidToDotaid = (steamid) => {
+  return Long.fromString(steamid).sub('76561197960265728').toNumber()
+}
+
+exports.backTo = () => {
+  history.go(-1)
+}
+
+/**
+ * 获取英雄名字
+ * id =>英雄id
+ * callback => 成功后回调函数
+ */
+var getHeroNameArr = (heros, id) => {
+  return heros.filter(function (value) {
+    if (value.id === id) {
+      return value.localized_name
+    }
+  })
+}
+
+exports.getHeroNameFromId = (id, callback) => {
+  var d = window.localStorage.getItem('heros')
+  if (!d) {
+    axios({
+      method: 'get',
+      url: '/api/IEconDOTA2_570/GetHeroes/v1?key=' + config.dota2_token + '&language=zh'
+    }).then((res) => {
+      if (res.data.result.status === 200) {
+        let d = res.data.result
+        let name = getHeroNameArr(d.heros, id)
+        window.localStorage.setItem('heros', JSON.stringify(d))
+        callback(name[0].localized_name)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+  } else {
+    let name = getHeroNameArr(JSON.parse(d).heroes, id)
+    callback(name[0].localized_name)
+  }
+}
+
+// 获得8位二进制数 补满8位
+exports.get8bitNumber = (number) => {
+  number = number.toString(2)
+  if (number.length !== 8) {
+    for (let i = 0; i < 8 - number.length; i++) {
+      number = '0' + number
+    }
+  }
+  return number
+}
+
+// 计算kda k=>杀 d=>死 a=>助
+exports.getKDA = (k, d, a) => {
+  let kda = 0
+  if (d === 0) d = 1
+  kda = (k + a) / d
+  return kda.toFixed(2)
+}
 exports.config = config

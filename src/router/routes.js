@@ -55,7 +55,7 @@ const routers = [{
   name: 'friends',
   component: Friends
 }, {
-  path: '/userDetail',
+  path: '/userDetail/:sid',
   name: 'userDetail',
   component: UserDetail
 }, {

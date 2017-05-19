@@ -1,28 +1,23 @@
 <template>
     <header id="head">
       <span v-if='isBack' class='backbtn' @click='backTo'>返回</span>
-      <div class="navbar clearfix fix" :class="{'show':show}">{{pageType}}</div>
+      <div class="navbar clearfix fix">{{pageType}}</div>
     </header>
 </template>
 
 <script>
-  export default{
-    data () {
-      return {
-        show: false
-      }
-    },
-    props: {
-      pageType: String,
-      fix: Boolean,
-      isBack: Boolean
-    },
-    methods: {
-      backTo: function () {
-        history.go(-1)
-      }
+import util from '../lib/utils'
+export default{
+  props: {
+    pageType: String,
+    isBack: Boolean
+  },
+  methods: {
+    backTo: function () {
+      util.backTo()
     }
   }
+}
 </script>
 <style lang="scss" rel="stylesheet/scss">
 @import '../assets/scss/common.scss';

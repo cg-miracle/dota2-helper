@@ -13,7 +13,7 @@
           </div>
           <section v-show='allUsers.length' class='user-list'>
            <h2 class='userTitle'><i class="iconfont icon-iconfonthuangguan huangguan"></i>玩家</h2>
-           <div v-for='user in allUsers' class='user-item'>
+           <div v-for='user in allUsers' class='user-item' @click='toUserDetail(user.steamid)'>
            <div class='userInfo'>
               <img :src="user.avatar" alt="玩家头像" class='userAvatar'>
               <div class='nameAndTime'>
@@ -38,7 +38,6 @@ import axios from 'axios'
 import util from '../lib/utils'
 import acer1 from '../assets/images/acer1.gif'
 import acer2 from '../assets/images/acer2.gif'
-var Long = require('long')
 
 export default {
   data () {
@@ -81,21 +80,21 @@ export default {
         this.allUsers = users
       }
     },
-    toheroDetail (id, imgid) {
-      this.$router.push({name: 'heroDetail', params: {id: id, imgid: imgid}})
-    },
     getImg (obj) {
       return util.getImgUrl(obj)
     },
     getSteamid (dotaid) {
-      return Long.fromString(dotaid).add('76561197960265728').toString()
+      return util.dotaidToSteamid(dotaid)
     },
     getDotaid (steamid) {
-      return Long.fromString(steamid).sub('76561197960265728').toNumber()
+      return util.steamidToDotaid(steamid)
     },
     getlogoffTime (time) {
       let diff = Date.now() - time * 1000
       return util.getLastTimeStr(diff)
+    },
+    toUserDetail (steamid) {
+      this.$router.push({name: 'userDetail', params: {sid: steamid}})
     }
   },
   directives: {
