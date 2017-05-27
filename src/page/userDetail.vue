@@ -7,36 +7,38 @@
         <p class='user-name'>{{userInfo.personaname}}</p>
         <p class='dota-id'>ID: {{getDotaid(userInfo.steamid)}}</p>
       </div>
-      <section class='summaries'>
-        <h2>摘要</h2>
-        <div class='summaries-content'>
-          <div class='summaries-item'><p>2087</p><p>总场数</p></div>
-          <div class='summaries-item'><p>3.20</p><p>KDA</p></div>
-          <div class='summaries-item'><p>49.5%</p><p>总胜率</p></div>
-          <div class='summaries-item'><p>3000</p><p>天梯匹配MMR</p></div>
-        </div>
-      </section>
-      <section class='recent-match'>
-        <h2>最近比赛</h2>
-        <section class='match-table'>
-          <div class='table-header'>
-              <span>英雄</span>
-              <span>结果</span>
-              <span>level</span>
-              <span>结束时间</span>
-              <span>KDA</span>
-          </div>
-          <div class='table-body'>
-            <div class='cell' v-for='match in tableData'>
-              <span class="item">{{match.hero}}</span>
-              <span class="item"><span class="resultTag" :class="match.result === '胜'?'winColor':'failColor'">{{match.result}}</span></span>
-              <span class="item col-C7CBCF">{{match.level}}</span>
-              <span class="item">{{match.end_at}}</span>
-              <span class="item">{{match.kda}}</span>
-            </div>
+      <div>
+        <section class='summaries'>
+          <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>摘要</h2>
+          <div class='summaries-content'>
+            <div class='summaries-item'><p>2087</p><p>总场数</p></div>
+            <div class='summaries-item'><p>3.20</p><p>KDA</p></div>
+            <div class='summaries-item'><p>49.5%</p><p>总胜率</p></div>
+            <div class='summaries-item'><p>3000</p><p>天梯匹配MMR</p></div>
           </div>
         </section>
-      </section>
+        <section class='recent-match'>
+          <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>最近比赛</h2>
+          <section class='match-table'>
+            <div class='table-header'>
+                <span>英雄</span>
+                <span>结果</span>
+                <span>level</span>
+                <span>结束时间</span>
+                <span>KDA</span>
+            </div>
+            <div class='table-body'>
+              <div class='cell' v-for='match in tableData'>
+                <span class="item"><img :src="match.hero" class="hero_avatar"></span>
+                <span class="item"><span class="resultTag" :class="match.result === '胜'?'winColor':'failColor'">{{match.result}}</span></span>
+                <span class="item col-C7CBCF">{{match.level}}</span>
+                <span class="item">{{match.end_at}}</span>
+                <span class="item">{{match.kda}}<p class='k_d_a col-C7CBCF'>{{match.kdaInfo}}</p></span>
+              </div>
+            </div>
+          </section>
+        </section>
+      </div>
     </section>
     <tb type='好友'></tb>
   </div>
@@ -64,7 +66,8 @@
           result: '胜',
           hero: '斧王',
           level: 'High',
-          kda: '40'
+          kda: '40',
+          kdaInfo: '1／2／3'
         }],
         matchIds: [],
         matchDetils: []
@@ -155,18 +158,17 @@
           } else { // 夜宴
             winStatus = match.radiant_win ? '负' : '胜'
           }
-          console.log(this.isWin)
           rtn.result = winStatus
-          util.getHeroNameFromId(player.hero_id, (name) => {
-            rtn.hero = name
+          util.getHeroNameFromId(player.hero_id, (nameObj) => {
+            rtn.hero = util.getHeroAvatar(nameObj.name, 'vert')
           })
           var diff = Date.now() - match.start_time * 1000
           rtn.end_at = util.getLastTimeStr(diff)
           rtn.level = 'Normal' // level 不知道怎么算 ＝ ＝！ Normal,High,Very High
           rtn.kda = util.getKDA(player.kills, player.deaths, player.assists)
+          rtn.kdaInfo = player.kills + '／' + player.deaths + '／' + player.assists
           return rtn
         })
-        console.log(this.tableData)
       },
       getSteamid (dotaid) {
         return util.dotaidToSteamid(dotaid)
@@ -187,9 +189,11 @@
 
 <style lang='scss' style="stylesheet/scss">
 @import '../assets/scss/common.scss';
+$heroavatarW: 40px;
 $cellBorderColor: #F1F2F2;
 $failColor: #BBBDCF;
 $winColor: #31A836;
+$titleColor: #676D73;
 .col-C7CBCF{
   color: #C7CBCF;
 }
@@ -226,6 +230,14 @@ $winColor: #31A836;
   //摘要
   .summaries{
     margin: 20px 0 25px 0;
+    h2{
+      padding-left: 10px;
+      margin-bottom: 5px;
+      color: $titleColor;
+      i{
+        margin-right: 10px;
+      }
+    }
     .summaries-content{
       padding: 10px 20px;
       display: flex;
@@ -245,37 +257,56 @@ $winColor: #31A836;
     }
   }
   //最近比赛
-  .match-table{
-    .table-header{
-      display: flex;
-      font-size: 15px;
-      background-color: rgb(254,255,255);
-      color: #C7CBCF;
-      justify-content: space-around;
-      border-bottom: 1px solid $cellBorderColor;
-      padding: 5px 10px;
-      span{
-         flex: 0 1 20%;
+  .recent-match{
+    h2{
+      padding-left: 10px;
+      margin-bottom: 5px;
+      color: $titleColor;
+      i{
+        margin-right: 10px;
       }
     }
-    .table-body{
-      background-color: #fff;
-      font-size: 14px;
-      .cell{
+    .match-table{
+      .table-header{
         display: flex;
-        align-items: center;
+        font-size: 15px;
+        background-color: rgb(254,255,255);
+        color: #C7CBCF;
         justify-content: space-around;
         border-bottom: 1px solid $cellBorderColor;
-        padding: 10px 10px;
-        .item{
+        padding: 5px 10px;
+        span{
           flex: 0 1 20%;
-          .resultTag{
-            display:inline-block;
-            width:34px;
-            height:34px;
-            line-height: 34px;
-            text-align:center;
-            color: white;
+        }
+      }
+      .table-body{
+        background-color: #fff;
+        font-size: 14px;
+        .cell{
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          border-bottom: 1px solid $cellBorderColor;
+          padding: 5px 10px;
+          .item{
+            flex: 0 1 20%;
+            .hero_avatar{
+              width: $heroavatarW;
+              height: $heroavatarW;
+              @include radius(50%);
+              vertical-align: middle;
+            }
+            .resultTag{
+              display:inline-block;
+              width:23px;
+              height:23px;
+              line-height: 23px;
+              text-align:center;
+              color: white;
+            }
+            .k_d_a{
+              font-size: 12px;
+            }
           }
         }
       }

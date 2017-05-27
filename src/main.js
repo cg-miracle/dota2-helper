@@ -11,6 +11,7 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.use(Axios)
+
 // 实例化VueRorouter
 const router = new VueRouter({
   mode: 'history',

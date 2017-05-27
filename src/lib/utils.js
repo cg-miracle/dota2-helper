@@ -9,6 +9,10 @@ var config = {
   'skillicon': 'http://cdn.tgp.qq.com/kog/v3/images/skillIcon/' // {技能ID}.png'
 }
 
+function getRealName (name) {
+  return name.replace('npc_dota_hero_', '')
+}
+
 exports.getLastTimeStr = diff => {
   const minute = 60 * 1000 // 1分钟
   const hour = 60 * minute // 1小时
@@ -39,6 +43,7 @@ exports.getLastTimeStr = diff => {
  * 返回英雄头像 suffix ( eb sb lg full vert)
  */
 exports.getHeroAvatar = (name, suffix) => {
+  name = getRealName(name)
   if (suffix === 'vert') {
     suffix = '_vert.jpg'
   } else {
@@ -89,15 +94,32 @@ exports.getHeroNameFromId = (id, callback) => {
         let d = res.data.result
         let name = getHeroNameArr(d.heros, id)
         window.localStorage.setItem('heros', JSON.stringify(d))
-        callback(name[0].localized_name)
+        callback(name[0])
       }
     }).catch((err) => {
       console.log(err)
     })
   } else {
     let name = getHeroNameArr(JSON.parse(d).heroes, id)
-    callback(name[0].localized_name)
+    callback(name[0])
   }
+}
+
+// 获取战队图片
+exports.getTeamLogo = (ugcid) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: 'get',
+      url: '/api/ISteamRemoteStorage/GetUGCFileDetails/v1/?key=' + config.dota2_token + '&ugcid=' + ugcid + '&appid=570'
+    }).then((res) => {
+      let d = res.data.data
+      let url = d.url
+      resolve(url)
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
 }
 
 // 获得8位二进制数 补满8位

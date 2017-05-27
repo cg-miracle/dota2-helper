@@ -63,10 +63,7 @@ export default {
     },
     // 获得英雄头像地址
     getImg (fullName) {
-      return util.getHeroAvatar(this.getRealName(fullName), 'vert')
-    },
-    getRealName (name) {
-      return name.replace('npc_dota_hero_', '')
+      return util.getHeroAvatar(fullName, 'vert')
     }
   },
   components: {
