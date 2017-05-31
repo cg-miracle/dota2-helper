@@ -3,13 +3,13 @@
   <hd page-type="大厅"></hd>
   <div id="hall">
       <!--banner-->
-       <el-carousel height="150px">
+       <el-carousel height="150px" class="banner-wrap">
         <el-carousel-item v-for="item in imgs" :key="item">
-          <img :src="item" alt="banner图">
+          <img :src="item" alt="banner图" class="banner-logo">
         </el-carousel-item>
-    </el-carousel>
+      </el-carousel>
        <section class='dota-team'>
-          <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>战队</h2>
+          <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>战队(CN)</h2>
          <section class='match-table'>
             <div class='table-header'>
                 <span>NO</span>
@@ -18,12 +18,11 @@
                 <span>创建时间</span>
             </div>
             <div class='table-body'>
-              <div class='cell' v-for='match in tableData'>
-                <span class="item"><img :src="match.hero" class="hero_avatar"></span>
-                <span class="item"><span class="resultTag" :class="match.result === '胜'?'winColor':'failColor'">{{match.result}}</span></span>
-                <span class="item col-C7CBCF">{{match.level}}</span>
-                <span class="item">{{match.end_at}}</span>
-                <span class="item">{{match.kda}}<p class='k_d_a col-C7CBCF'>{{match.kdaInfo}}</p></span>
+              <div class='cell' v-for='(team,index) in teams'>
+                <span class="item">{{index + 1}}</span>
+                <span class="item"><img :src="team.logo" class="team_avatar"></span>
+                <span class="item col-C7CBCF">{{team.tag}}</span>
+                <span class="item">{{getFormateTime(team.time_created)}}</span>
               </div>
             </div>
           </section>
@@ -36,11 +35,12 @@
 <script>
 import hd from '../components/header.vue'
 import tb from '../components/toolbar.vue'
-import banner1 from '../assets/images/banner1.jpeg'
-import banner2 from '../assets/images/banner2.jpeg'
-import banner3 from '../assets/images/banner3.jpeg'
+import banner1 from '../assets/images/banner1.png'
+import banner2 from '../assets/images/banner2.jpg'
+import banner3 from '../assets/images/banner3.jpg'
 import util from '../lib/utils'
 import axios from 'axios'
+import moment from 'moment'
 export default {
   data () {
     return {
@@ -60,9 +60,12 @@ export default {
     this.getTeams()
   },
   methods: {
+    getFormateTime (time) {
+      return moment(time * 1000).format('YY/MM/DD')
+    },
     getTeams () {
       var d = window.localStorage.getItem('teams')
-      if (d) {
+      if (!d) {
         axios({
           method: 'get',
           url: '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?format=json&key=' + util.config.dota2_token
@@ -80,6 +83,7 @@ export default {
         this.getCnTeams(teams)
       }
     },
+    // 获取中国战队
     getCnTeams (teams) {
       let logos = []
       this.teams = teams.filter(value => {
@@ -118,7 +122,14 @@ export default {
 $titleColor: #676D73;
 $cellBorderColor: #F1F2F2;
 #hall{
+  .banner-wrap{
+    border:2px solid $Black;
+    .banner-logo{
+      width: 100%;
+    }
+  }
   .dota-team {
+    margin-top:10px;
     h2{
       padding-left: 10px;
       margin-bottom: 5px;
@@ -130,7 +141,7 @@ $cellBorderColor: #F1F2F2;
     .match-table{
       .table-header{
         display: flex;
-        font-size: 15px;
+        font-size: 12px;
         background-color: rgb(254,255,255);
         color: #C7CBCF;
         justify-content: space-around;
@@ -144,16 +155,24 @@ $cellBorderColor: #F1F2F2;
         }
       }
       .table-body{
-        background-color: #fff;
-        font-size: 14px;
+        background-color: rgba(29,29,29,.3);
+        color: $white;
+        font-size: 13px;
         .cell{
           display: flex;
           align-items: center;
           justify-content: space-around;
           border-bottom: 1px solid $cellBorderColor;
           padding: 5px 10px;
+          & .item:nth-of-type(1){
+            flex: 0 1 10%;
+          }
           .item{
             flex: 0 1 20%;
+          }
+          .team_avatar{
+            width: 60px;
+            height:40px;
           }
         }
       }

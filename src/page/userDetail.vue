@@ -29,11 +29,13 @@
             </div>
             <div class='table-body'>
               <div class='cell' v-for='match in tableData'>
-                <span class="item"><img :src="match.hero" class="hero_avatar"></span>
-                <span class="item"><span class="resultTag" :class="match.result === '胜'?'winColor':'failColor'">{{match.result}}</span></span>
-                <span class="item col-C7CBCF">{{match.level}}</span>
-                <span class="item">{{match.end_at}}</span>
-                <span class="item">{{match.kda}}<p class='k_d_a col-C7CBCF'>{{match.kdaInfo}}</p></span>
+                <router-link class="cell-link" :to="{name:'matchDetail',params:{mid:match.match_id}}">
+                  <span class="item"><img :src="match.hero" class="hero_avatar"></span>
+                  <span class="item"><span class="resultTag" :class="match.result === '胜'?'winColor':'failColor'">{{match.result}}</span></span>
+                  <span class="item col-C7CBCF">{{match.level}}</span>
+                  <span class="item end-time">{{match.end_at}}</span>
+                  <span class="item">{{match.kda}}<p class='k_d_a col-C7CBCF'>{{match.kdaInfo}}</p></span>
+                </router-link>
               </div>
             </div>
           </section>
@@ -67,7 +69,8 @@
           hero: '斧王',
           level: 'High',
           kda: '40',
-          kdaInfo: '1／2／3'
+          kdaInfo: '1／2／3',
+          mid: '111'
         }],
         matchIds: [],
         matchDetils: []
@@ -167,6 +170,7 @@
           rtn.level = 'Normal' // level 不知道怎么算 ＝ ＝！ Normal,High,Very High
           rtn.kda = util.getKDA(player.kills, player.deaths, player.assists)
           rtn.kdaInfo = player.kills + '／' + player.deaths + '／' + player.assists
+          rtn.match_id = match.match_id
           return rtn
         })
       },
@@ -283,29 +287,36 @@ $titleColor: #676D73;
         background-color: #fff;
         font-size: 14px;
         .cell{
-          display: flex;
-          align-items: center;
-          justify-content: space-around;
-          border-bottom: 1px solid $cellBorderColor;
-          padding: 5px 10px;
-          .item{
-            flex: 0 1 20%;
-            .hero_avatar{
-              width: $heroavatarW;
-              height: $heroavatarW;
-              @include radius(50%);
-              vertical-align: middle;
-            }
-            .resultTag{
-              display:inline-block;
-              width:23px;
-              height:23px;
-              line-height: 23px;
-              text-align:center;
-              color: white;
-            }
-            .k_d_a{
-              font-size: 12px;
+          .cell-link{
+            width:100%;
+            color: $Black;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-bottom: 1px solid $cellBorderColor;
+            padding: 5px 10px;
+            .item{
+              flex: 0 1 20%;
+              .hero_avatar{
+                width: $heroavatarW;
+                height: $heroavatarW;
+                @include radius(50%);
+                vertical-align: middle;
+              }
+              &.end-time{
+                font-size:12px;
+              }
+              .resultTag{
+                display:inline-block;
+                width:23px;
+                height:23px;
+                line-height: 23px;
+                text-align:center;
+                color: white;
+              }
+              .k_d_a{
+                font-size: 12px;
+              }
             }
           }
         }

@@ -122,6 +122,21 @@ exports.getTeamLogo = (ugcid) => {
   })
 }
 
+// 获取用户信息 头像，数字ID等
+exports.getUsers = (sid, callback) => { // 221829218
+  let steamids = [sid]
+  axios({
+    method: 'get',
+    url: '/api/ISteamUser/GetPlayerSummaries/v0002/?key=' + config.dota2_token + '&steamids=' + steamids
+  }).then((res) => {
+    let userInfo = res.data.response.players[0]
+    callback(null, userInfo)
+  }).catch((err) => {
+    console.log(err)
+    callback(err)
+  })
+}
+
 // 获得8位二进制数 补满8位
 exports.get8bitNumber = (number) => {
   number = number.toString(2)

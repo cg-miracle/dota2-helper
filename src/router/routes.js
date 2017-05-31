@@ -34,6 +34,12 @@ const UserDetail = resolve => {
   })
 }
 
+const MatchDetail = resolve => {
+  require.ensure(['../page/matchDetail.vue'], () => {
+    resolve(require('../page/matchDetail.vue'))
+  })
+}
+
 const routers = [{
   path: '/',
   name: 'home',
@@ -58,6 +64,10 @@ const routers = [{
   path: '/userDetail/:sid',
   name: 'userDetail',
   component: UserDetail
+}, {
+  path: '/matchDetail/:mid',
+  name: 'matchDetail',
+  component: MatchDetail
 }, {
   path: '*',
   component: Home
