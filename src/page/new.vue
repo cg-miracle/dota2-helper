@@ -15,7 +15,7 @@
                 <span>NO</span>
                 <span>战队logo</span>
                 <span>战队名</span>
-                <span>创建时间</span>
+                <span>组建时间</span>
             </div>
             <div class='table-body'>
               <div class='cell' v-for='(team,index) in teams'>
@@ -36,7 +36,7 @@
 import hd from '../components/header.vue'
 import tb from '../components/toolbar.vue'
 import banner1 from '../assets/images/banner1.png'
-import banner2 from '../assets/images/banner2.jpg'
+import banner2 from '../assets/images/banner2.png'
 import banner3 from '../assets/images/banner3.jpg'
 import util from '../lib/utils'
 import axios from 'axios'

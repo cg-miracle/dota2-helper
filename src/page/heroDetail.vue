@@ -56,7 +56,7 @@
   import hd from '../components/header.vue'
   import util from '../lib/utils.js'
   import axios from 'axios'
-  import runelogo from '../assets/images/runeLogo.png'
+  // import runelogo from '../assets/images/runeLogo.png'
   export default {
     data () {
       return {
@@ -65,7 +65,7 @@
         runes: [],
         heroimg: '',
         isselected: true,
-        runeImg: runelogo
+        runeImg: ''
       }
     },
     mounted () {

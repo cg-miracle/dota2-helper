@@ -5,12 +5,17 @@ var config = {
   dota2_token: '4EC45E0F6BB0435E586BC369FABDBAA2',
   token: '546FA-9D53D-45524-3225E',
   hero_img: 'http://cdn.dota2.com/apps/dota2/images/heroes/', // {hero_img_id}.png'
+  item_img: 'http://cdn.dota2.com/apps/dota2/images/items/', // <name>_lg.png'
   'heroicon': 'http://cdn.tgp.qq.com/kog/v3/images/hero/',
   'skillicon': 'http://cdn.tgp.qq.com/kog/v3/images/skillIcon/' // {技能ID}.png'
 }
 
 function getRealName (name) {
   return name.replace('npc_dota_hero_', '')
+}
+
+function getRealItemName (name) {
+  return name.replace('item_', '')
 }
 
 exports.getLastTimeStr = diff => {
@@ -40,7 +45,7 @@ exports.getLastTimeStr = diff => {
 
 /**
  * obj 英雄name
- * 返回英雄头像 suffix ( eb sb lg full vert)
+ * 返回英雄头像 suffix ( eb sb lg getHeroAvatar vert)
  */
 exports.getHeroAvatar = (name, suffix) => {
   name = getRealName(name)
@@ -50,6 +55,11 @@ exports.getHeroAvatar = (name, suffix) => {
     suffix = '_' + suffix + '.png'
   }
   return config.hero_img + name + suffix
+}
+
+exports.getItemAvatar = (name) => {
+  name = getRealItemName(name)
+  return config.item_img + name + '_lg.png'
 }
 
 /**
