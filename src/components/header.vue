@@ -22,6 +22,7 @@ export default{
 <style lang="scss" rel="stylesheet/scss">
 @import '../assets/scss/common.scss';
 #head{
+  z-index: 20;
   position: relative;
   .backbtn{
     position: fixed;

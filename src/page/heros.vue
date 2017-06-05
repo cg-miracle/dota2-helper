@@ -5,7 +5,7 @@
     <div class="title">
      <span class='co-9a3'>ALL</span>OF<span class='co-b7d'>HEROS</span>
     </div>
-      <div v-for='hero in herodatas' class='hero-item' @click="toheroDetail(hero.id,hero.name)">
+      <div v-for='hero in herodatas' class='hero-item'>
         <div class="img-wrap">
           <img :src="getImg(hero.name)" alt="英雄图标" class='hero-img'>
         </div>
@@ -30,9 +30,6 @@ export default {
       heroImg: ''
     }
   },
-  filters: {
-
-  },
   mounted () {
     this.getHeros()
   },
@@ -56,10 +53,6 @@ export default {
       } else {
         this.herodatas = JSON.parse(d).heroes
       }
-    },
-    // 跳转详情页
-    toheroDetail (id, heroname) {
-      this.$router.push({name: 'heroDetail', params: {id: id, heroname: heroname}})
     },
     // 获得英雄头像地址
     getImg (fullName) {

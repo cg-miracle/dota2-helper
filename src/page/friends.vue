@@ -7,7 +7,8 @@
         <span class='search-btn' @click="getUsers">搜索</span>
       </div>
       <div class='content-body'>
-          <div class='tips-area' v-show='!allUsers.length'>
+          <loading v-if="isLoad"></loading>
+          <div class='tips-area' v-else v-show='!allUsers.length'>
             <img :src='boothImg'>
             <p>{{tips}}</p>
           </div>
@@ -38,10 +39,12 @@ import axios from 'axios'
 import util from '../lib/utils'
 import acer1 from '../assets/images/acer1.gif'
 import acer2 from '../assets/images/acer2.gif'
+import loading from '../components/loading.vue'
 
 export default {
   data () {
     return {
+      isLoad: false,
       allUsers: [],
       imgurl: '',
       dotaid: '',
@@ -52,6 +55,8 @@ export default {
   methods: {
     getUsers () { // 221829218
       if (this.dotaid) {
+        this.allUsers = []
+        this.isLoad = true
         let ids = this.dotaid.split(',')
         let steamids = ids.map(function (value) {
           return this.getSteamid(value)
@@ -64,6 +69,7 @@ export default {
           this.showplayers(res.data)
         }).catch((err) => {
           console.log(err)
+          this.$message(err)
         })
       } else {
         this.allUsers = []
@@ -73,11 +79,15 @@ export default {
       let users = data.response.players
       if (!users.length) {
         // 如果搜不到玩家
+        this.isLoad = false
         this.allUsers = []
         this.boothImg = acer1
         this.tips = '地球上找不到该玩家'
       } else {
         this.allUsers = users
+        this.$nextTick(function () {
+          this.isLoad = false
+        })
       }
     },
     getImg (obj) {
@@ -106,7 +116,8 @@ export default {
   },
   components: {
     hd,
-    tb
+    tb,
+    loading
   }
 }
 </script>

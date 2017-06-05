@@ -5,20 +5,27 @@
         <p>比赛{{mid}}</p>
       </div>
     <section id='match-detail'>
-      <section class='match-wrap'>
+      <loading v-show="!isLoad">dd</loading>
+      <section class='match-wrap' v-show="isLoad">
       <!-- 天辉表格 -->
         <div class='match-table radiant'>
           <div class="table-header radiant-header">
            <div class="header-left radiant-desc">
-            <div class="desc-div"><p>Radiant</p><p>天辉</p></div></div>
-             <p class="winOrFailed">{{winStatus}}</p>
+            <div class="desc-div"><p>Radiant</p><p>天辉</p></div>
+             <p class="winOrFailed">{{rwinStatus}}</p>
+            </div>
+            <div class="header-right">
+              <span>杀敌 {{rKills}}</span>
+              <span>经验 {{rxp}}</span>
+              <span>金钱 {{rallMoney}}</span>
+            </div>
           </div>
           <div class="table-body">
             <div class="cell radiant" v-for="player in players.radiant">
               <img :src="player.heroavatar" alt="英雄头像" class="hero-avatar">
               <div class="name-damage">
                 <p class="user-name">{{player.personaname}}</p>
-                <p class="damage-str">伤害:{{getHeroDamage(player.hero_damage)}}%</p>
+                <p class="damage-str">伤害:{{getHeroDamage('radiant',player.hero_damage)}}%</p>
               </div>
               <div class="kda-info">
                 <p class="">{{player.kdaInfo}}</p>
@@ -29,7 +36,9 @@
                   <img :src="item" class="itemImg">
                 </div>
               </div>
-              <img :src="player.useravatar" alt="用户头像" class="user-avatar">
+              <span @click="toUserDetail(player.account_id)">
+                <img :src="player.useravatar" alt="用户头像" class="user-avatar">
+              </span>
             </div>
           </div>
         </div>
@@ -38,7 +47,12 @@
           <div class="table-header dire-header">
           <div class="header-left dire-desc">
             <div class="desc-div"><p>Dire</p><p>夜魇</p></div>
-            <p class="winOrFailed">{{winStatus}}</p>
+            <p class="winOrFailed">{{dwinStatus}}</p>
+          </div>
+          <div class="header-right">
+           <span>杀敌 {{dKills}}</span>
+           <span>经验 {{dxp}}</span>
+           <span>金钱 {{dallMoney}}</span>
           </div>
           </div>
           <div class="table-body">
@@ -46,7 +60,7 @@
               <img :src="player.heroavatar" alt="英雄头像" class="hero-avatar">
               <div class="name-damage">
                 <p class="user-name">{{player.personaname}}</p>
-                <p class="damage-str">伤害:{{getHeroDamage(player.hero_damage)}}%</p>
+                <p class="damage-str">伤害:{{getHeroDamage('dire',player.hero_damage)}}%</p>
               </div>
               <div class="kda-info">
                 <p class="">{{player.kdaInfo}}</p>
@@ -57,7 +71,9 @@
                   <img :src="item" class="itemImg">
                 </div>
               </div>
-              <img :src="player.useravatar" alt="用户头像" class="user-avatar">
+              <span @click="toUserDetail(player.account_id)">
+                <img :src="player.useravatar" alt="用户头像" class="user-avatar">
+              </span>
             </div>
           </div>
         </div>
@@ -72,6 +88,7 @@
 <script>
   import hd from '../components/header.vue'
   import tb from '../components/toolbar.vue'
+  import loading from '../components/loading.vue'
   import axios from 'axios'
   import util from '../lib/utils'
   import defaultLogo from '../assets/images/defaultuser.png'
@@ -82,11 +99,22 @@
         mid: '', // 比赛id
         players: {
           radiant: [], // 近卫方选手
-          dire: [] // 夜宴方选手
+          dire: [], // 夜宴方选手
+          isfinished: false
         },
-        totalHeroDamage: 0, // 总英雄伤害
+        nonameIds: [], // 存放匿名玩家id
+        isLoad: false,
+        rHeroDamage: 0, // 总英雄伤害
+        dHeroDamage: 0,
         allItems: [],
-        winStatus: '' // 输赢状态
+        rwinStatus: '', // 天辉输赢状态
+        dwinStatus: '', // 夜宴输赢状态
+        dallMoney: 0, // 平均金钱
+        rallMoney: 0,
+        dKills: 0, // 总杀人数
+        rKills: 0,
+        dxp: 0, // 平均经验值
+        rxp: 0
       }
     },
     mounted () {
@@ -112,68 +140,94 @@
         let match = data
         let players = match.players
         let self = this
-        for (let player of players) {
-          let rtn = {}
-          var p = new Promise(function (resolve, reject) {
-            // 英雄头像
-            util.getHeroNameFromId(player.hero_id, (nameObj) => {
-              rtn.heroavatar = util.getHeroAvatar(nameObj.name, 'full')
-              resolve()
-            })
-          })
-          let getUserInfo = function () {
-            return new Promise((resolve, reject) => {
-              // 获取玩家信息 名字 头像
-              let steamid = self.getSteamid(player.account_id.toString())
-              util.getUsers(steamid, (err, userInfo) => {
-                if (err) {
-                  console.error(err)
-                  reject(err)
-                }
-                if (userInfo) {
-                  rtn.useravatar = userInfo.avatar
-                  rtn.steamid = userInfo.steamid
-                  rtn.personaname = userInfo.personaname
-                } else {
-                  rtn.personaname = '匿名玩家'
-                  rtn.useravatar = defaultLogo
-                }
+        let dArr = []
+        let rArr = []
+        let rtnobj = {}
+        function setOneData (player, params) {
+          return new Promise((resolve, reject) => {
+            let rtn = {}
+            var p = new Promise(function (resolve, reject) {
+              // 英雄头像
+              util.getHeroNameFromId(player.hero_id, (nameObj) => {
+                rtn.heroavatar = util.getHeroAvatar(nameObj.name, 'full')
                 resolve()
               })
             })
-          }
-          p.then(getUserInfo).then(() => {
-            self.totalHeroDamage += player.hero_damage
-            rtn.hero_damage = player.hero_damage
-            // 杀／死／助
-            rtn.kdaInfo = player.kills + '／' + player.deaths + '／' + player.assists
-            rtn.kda = util.getKDA(player.kills, player.deaths, player.assists)
-            let engine = util.get8bitNumber(player.player_slot).substr(0, 1) // 阵营
-            let itemIds = [] // 道具装备id数组
-            for (let i = 0; i < 6; i++) {
-              var key = 'item_' + i
-              if (player[key]) {
-                itemIds.push(player[key])
-              }
+            let getUserInfo = function () {
+              return new Promise((resolve, reject) => {
+                // 获取玩家信息 名字 头像
+                let steamid = self.getSteamid(player.account_id.toString())
+                util.getUsers(steamid, (err, userInfo) => {
+                  if (err) {
+                    console.error(err)
+                    reject(err)
+                  }
+                  if (userInfo) {
+                    rtn.useravatar = userInfo.avatar
+                    rtn.steamid = userInfo.steamid
+                    rtn.personaname = userInfo.personaname
+                  } else {
+                    self.nonameIds.push(player.account_id)
+                    rtn.personaname = '匿名玩家'
+                    rtn.useravatar = defaultLogo
+                  }
+                  resolve()
+                })
+              })
             }
-            itemIds = itemIds.map(itemid => {
-              let itemName = self.allItems.filter(item => {
-                if (itemid === item.id) {
-                  return item
+            p.then(getUserInfo).then(() => {
+              rtn.hero_damage = player.hero_damage
+              // 杀／死／助
+              rtn.kdaInfo = player.kills + '／' + player.deaths + '／' + player.assists
+              rtn.kda = util.getKDA(player.kills, player.deaths, player.assists)
+              let engine = util.get8bitNumber(player.player_slot).substr(0, 1) // 阵营
+              let itemIds = [] // 道具装备id数组
+              for (let i = 0; i < 6; i++) {
+                var key = 'item_' + i
+                if (player[key]) {
+                  itemIds.push(player[key])
                 }
-              })[0]
-              return util.getItemAvatar(itemName.name)
+              }
+              itemIds = itemIds.map(itemid => {
+                let itemName = self.allItems.filter(item => {
+                  if (itemid === item.id) {
+                    return item
+                  }
+                })[0]
+                return util.getItemAvatar(itemName.name)
+              })
+              rtn.itemIds = itemIds
+              rtn.account_id = player.account_id
+              if (!parseInt(engine)) { // 天辉
+                self.rwinStatus = match.radiant_win ? '胜利' : '失败'
+                self.dwinStatus = match.radiant_win ? '失败' : '胜利'
+                self.rHeroDamage += player.hero_damage
+                self.rallMoney += player.gold_per_min
+                self.rKills += player.kills
+                self.rxp += player.xp_per_min
+                rArr.push(rtn)
+              } else { // 夜宴
+                self.dwinStatus = match.radiant_win ? '失败' : '胜利'
+                self.rwinStatus = match.radiant_win ? '胜利' : '失败'
+                self.dHeroDamage += player.hero_damage
+                self.dallMoney += player.gold_per_min
+                self.dKills += player.kills
+                self.dxp += player.xp_per_min
+                dArr.push(rtn)
+              }
+              resolve()
             })
-            rtn.itemIds = itemIds
-            if (!parseInt(engine)) { // 天辉
-              this.winStatus = match.radiant_win ? '胜利' : '失败'
-              self.players.radiant.push(rtn)
-            } else { // 夜宴
-              this.winStatus = match.radiant_win ? '失败' : '胜利'
-              self.players.dire.push(rtn)
-            }
           })
         }
+        let promiseArr = players.map((player) => {
+          return setOneData(player)
+        })
+        Promise.all(promiseArr).then(res => {
+          rtnobj.radiant = rArr
+          rtnobj.dire = dArr
+          this.players = rtnobj
+          this.players.isfinished = true
+        })
       },
       // 获取所有装备
       getAllItems () {
@@ -193,20 +247,46 @@
           this.allItems = JSON.parse(d)
         }
       },
-      getHeroDamage (damage) {
-        let d = (damage / this.totalHeroDamage) * 100
-        return d.toFixed(2)
+      getHeroDamage (str, damage) {
+        if (str === 'radiant') {
+          let d = (damage / this.rHeroDamage) * 100
+          return d.toFixed(2)
+        } else {
+          let d = (damage / this.dHeroDamage) * 100
+          return d.toFixed(2)
+        }
       },
       getSteamid (dotaid) {
         return util.dotaidToSteamid(dotaid)
+      },
+      toUserDetail (dotaid) {
+        let steamid = this.getSteamid(dotaid.toString())
+        if (this.nonameIds.indexOf(dotaid) === -1) { // 不是匿名玩家
+          this.$router.push({name: 'userDetail', params: {sid: steamid}})
+        }
       },
       backfunc () {
         util.backTo()
       }
     },
+    watch: {
+      players: {
+        handler (val) {
+          // 监测列表数据变化
+          if (val.isfinished) {
+            this.$nextTick(function () {
+              // console.log('dom 更新完毕')
+              this.isLoad = true
+            })
+          }
+        },
+        deep: true
+      }
+    },
     components: {
       hd,
-      tb
+      tb,
+      loading
     }
   }
 </script>
@@ -233,21 +313,20 @@ $radiantColor: rgb(81,140,66); //近卫 颜色
   background-color: $winColor;
 }
 .container-wrap{
-  height:100%;
-  background-color: $Black;
-  margin-top: $titleH;
-  margin-bottom: $toolbarH;
+  height: 100%;
 }
 .match-title{
   position: fixed;
   left: 0;
   top: 0;
   right:0;
+  z-index: 10;
   height: $titleH;
   line-height: $titleH;
   text-align: center;
   background-color: $Black;
   color: $white;
+  border-bottom: 4px solid $ShitYellow;
   .back-btn{
     display: inline-block;
     position: absolute;
@@ -259,7 +338,16 @@ $radiantColor: rgb(81,140,66); //近卫 颜色
   }
 }
 #match-detail{
+   margin-top: 10px;
+    height: 100%;
+    background-color: #1F2D3D;
+    margin-top: 54px;
+    margin-bottom: 50px;
+    overflow: scroll;
   .match-wrap{
+    & .match-table:nth-of-type(2){
+      margin-top: 10px;
+    }
     .dire{
       background: linear-gradient(to right, rgb(37,18,18) , $Black);
       .user-name{
@@ -274,6 +362,9 @@ $radiantColor: rgb(81,140,66); //近卫 颜色
     }
     .table-header{
       height: $tableheaderH;
+      display: flex;
+      justify-content: space-between;
+      // 表格头左半
       .header-left{
         width:150px;
         height:$tableheaderH;
@@ -295,6 +386,16 @@ $radiantColor: rgb(81,140,66); //近卫 颜色
             left: 59px;
             top: -34px;
             font-size: 19px;
+        }
+      }
+      // 表格头右半
+      .header-right{
+        display:flex;
+        color: #fff;
+        font-size: 12px;
+        align-items:center;
+        &>span{
+          padding:0 8px;
         }
       }
     }
@@ -329,7 +430,11 @@ $radiantColor: rgb(81,140,66); //近卫 颜色
         max-height: 40px;
       }
       .user-name{
-        font-size: 16px;
+        font-size: 15px;
+        width: 87px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
       .item-info{
         width: $itemW*3;

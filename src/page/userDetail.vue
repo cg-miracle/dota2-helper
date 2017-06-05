@@ -27,7 +27,8 @@
                 <span>结束时间</span>
                 <span>KDA</span>
             </div>
-            <div class='table-body'>
+            <loading v-if="!isLoad"></loading>
+            <div class='table-body' v-else>
               <div class='cell' v-for='match in tableData'>
                 <router-link class="cell-link" :to="{name:'matchDetail',params:{mid:match.match_id}}">
                   <span class="item"><img :src="match.hero" class="hero_avatar"></span>
@@ -51,13 +52,18 @@
   import tb from '../components/toolbar.vue'
   import axios from 'axios'
   import util from '../lib/utils'
+  import loading from '../components/loading.vue'
+  import defaultLogo from '../assets/images/defaultuser.png'
 
   export default {
     data () {
       return {
         userInfo: {// 用户信息
-          steamid: '1112'
+          steamid: '0',
+          personaname: '匿名玩家',
+          avatarmedium: defaultLogo
         },
+        isLoad: false,
         sid: '', // stemid
         did: '', // dota2 数字id
         imgurl: '',
@@ -102,11 +108,15 @@
           method: 'get',
           url: '/api/IDOTA2Match_570/GetMatchHistory/v1?key=' + util.config.dota2_token + '&matches_requested=5&account_id=' + accountid
         }).then((res) => {
-          let matches = res.data.result.matches
-          this.matchIds = matches.map(function (value) {
-            return value.match_id
-          })
-          this.getmatchDetail()
+          if (res.data.result.status === 15) {
+            this.$message('此用户关闭信息共享')
+          } else {
+            let matches = res.data.result.matches
+            this.matchIds = matches.map(function (value) {
+              return value.match_id
+            })
+            this.getmatchDetail()
+          }
         }).catch((err) => {
           console.error(err)
         })
@@ -173,6 +183,9 @@
           rtn.match_id = match.match_id
           return rtn
         })
+        this.$nextTick(function () {
+          this.isLoad = true
+        })
       },
       getSteamid (dotaid) {
         return util.dotaidToSteamid(dotaid)
@@ -186,7 +199,8 @@
     },
     components: {
       hd,
-      tb
+      tb,
+      loading
     }
   }
 </script>
@@ -224,6 +238,7 @@ $titleColor: #676D73;
       height: 30px;
     }
     .user-avatar{
+      max-width: 60px;
       @include radius(50%)
     }
     .dota-id{
@@ -271,6 +286,8 @@ $titleColor: #676D73;
       }
     }
     .match-table{
+      min-height: 300px;
+      background-color: #fff;
       .table-header{
         display: flex;
         font-size: 15px;
