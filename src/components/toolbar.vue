@@ -19,7 +19,7 @@
             <span>好友</span>             
          </div>
         </li>
-        <li class="item" >
+        <li class="item" @click="pushTo('about')" :class="{'active':type === '关于'}">
         <div class="item-inner">
                <i class="iconfont icon-prompt"></i>
               <span>关于</span>               

@@ -1,0 +1,76 @@
+$searchBarH: 40px;
+$userAvatarW: 40px;
+
+#friends{
+  background: #f0f2f4;
+  height: 100%;
+  .search-bar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: $searchBarH;
+    line-height: $searchBarH;
+    border: 3px solid $Black;
+    overflow: hidden;
+    .search-input{
+        width: 80%;
+        height: 100%;
+    }
+    .search-btn{
+      text-align: center;
+       width: 20%;
+       background-color: $ShitYellow;
+       color: $white;
+    }
+  }
+  .tips-area{
+    margin-top: 50px;
+    text-align: center;
+    color: $Silver;
+  }
+  .user-list{
+    margin-top: 15px;
+    .userTitle{
+      margin:0 0 5px 10px;
+      color: $Silver;
+    }
+    .user-item{
+      border-bottom: 1px solid #eee;
+      font-size: 12px;
+      padding: 5px;
+      background: $white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .userInfo{
+        display: flex;
+        align-items: center;
+        width:50%;
+        .userAvatar{
+          width: $userAvatarW;
+          height: $userAvatarW;
+          @include radius(50%);
+          margin-right: 10px;
+        }
+        .nameAndTime{
+          .userName{
+            max-width: 100px;
+            overflow:hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          &>p:nth-of-type(2){
+            color: $LightSilver;
+          }
+        }
+      }
+      .dotaID{
+        color: $LightSilver;
+      }
+      .seeMoreIcon{
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+}

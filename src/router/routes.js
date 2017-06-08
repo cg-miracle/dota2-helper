@@ -16,12 +16,6 @@ const Heros = resolve => {
   })
 }
 
-const HeroDetail = resolve => {
-  require.ensure(['../page/heroDetail.vue'], () => {
-    resolve(require('../page/heroDetail.vue'))
-  })
-}
-
 const Friends = resolve => {
   require.ensure(['../page/friends.vue'], () => {
     resolve(require('../page/friends.vue'))
@@ -40,6 +34,12 @@ const MatchDetail = resolve => {
   })
 }
 
+const About = resolve => {
+  require.ensure(['../page/about.vue'], () => {
+    resolve(require('../page/about.vue'))
+  })
+}
+
 const routers = [{
   path: '/',
   name: 'home',
@@ -53,10 +53,6 @@ const routers = [{
   name: 'heros',
   component: Heros
 }, {
-  path: '/hero/:id',
-  name: 'heroDetail',
-  component: HeroDetail
-}, {
   path: '/friends',
   name: 'friends',
   component: Friends
@@ -68,6 +64,10 @@ const routers = [{
   path: '/matchDetail/:mid',
   name: 'matchDetail',
   component: MatchDetail
+}, {
+  path: '/about',
+  name: 'about',
+  component: About
 }, {
   path: '*',
   component: Home

@@ -1,0 +1,28 @@
+#about{
+  height: 100%;
+  padding: 20px;
+  .about-wrap{
+    padding: 10px 10px 40px 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.25);
+    .avatar{
+      width: 100px;
+      overflow: hidden;
+      border-radius: 10px;
+      max-height: 76px;
+    }
+    .me-info{
+      max-height: 76px;
+      color: #98a6ad;
+      font-size: 15px;
+      p{
+        margin-bottom: 5px;
+      }
+    }
+    .declare{
+      margin-top: 15px;
+      font-size: 13px;
+    }
+  }
+}

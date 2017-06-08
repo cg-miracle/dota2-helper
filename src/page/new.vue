@@ -13,13 +13,14 @@
          <section class='match-table'>
             <div class='table-body'>
               <div class='cell' v-for='(team,index) in teams'>
-                <span class="item"><img :src="team.logo" class="team_avatar"></span>
+                <span class="item"><img :src="team.logo" class="team_avatar" alt="战队logo"></span>
                 <div class="nameAndTag">
                   <p class="item col-C7CBCF">{{team.name}}</p>
                   <p class="item col-C7CBCF">{{team.tag}}</p>
                 </div>
                 <span class="create-time">{{getFormateTime(team.time_created)}}</span>
               </div>
+              <div class='noData' v-show="isError">steam api 挂了</div>
             </div>
           </section>
       </section>
@@ -79,18 +80,35 @@ export default {
       leaguelogo: leaguelogo,
       imgs: [banner1, banner2, banner3],
       teams: [],
-      logos: {
-        'EHOME': '81469728907777994',
-        'Invictus Gaming': '528418381437908533',
-        'DK': '438324451817706092',
-        'LGD-GAMING': '784036350514842156',
-        'Newbee.Boss': '90469956945415030'
-      }
+      isError: false
     }
   },
   mounted () {
     // var preMonth = moment().subtract(2, 'months')._d
-    this.getTeams()
+    // this.getTeams()
+    var url = '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?format=json&key=' + util.config.dota2_token
+    fetch(url, {
+      method: 'GET'
+    })
+    .then(response => {
+      if (response.status !== 200) {
+         this.isError = true
+         return null
+      } else {
+        return response.text()
+      }
+    })
+    .then(result => {
+      result = result.replace(/(\d{17,})/g, function ($1) { return '\"' + $1 + '\"' })
+      let data = JSON.parse(result)
+      let d = data.result
+      this.getCnTeams(d.teams)
+      // window.localStorage.setItem('teams', JSON.stringify(d))
+    }).catch(err => {
+      this.$message(err)
+      this.isError = true
+      console.error(err)
+    })
   },
   methods: {
     getFormateTime (time) {
@@ -122,7 +140,7 @@ export default {
       let logos = []
       this.teams = teams.filter(value => {
         if (value.country_code === 'cn') {
-          let logoid = this.logos[value.name]
+          let logoid = value.logo
           logos.push(logoid)
           return value
         }
@@ -132,12 +150,14 @@ export default {
         return util.getTeamLogo(id)
       })
       let self = this
-      Promise.all(promisify).then(urls => {
+      Promise.all(promisify).then((urls) => {
         // urls logo地址数组
         self.teams = self.teams.map((value, index) => {
           value.logo = urls[index]
           return value
         })
+        console.log(self.teams)
+        window.localStorage.setItem('teams', JSON.stringify(self.teams))
       }).catch(reason => {
         console.log(reason)
       })
@@ -149,79 +169,3 @@ export default {
   }
 }
 </script>
-
-<style lang='scss' style="stylesheet/scss">
-@import '../assets/scss/common.scss';
-$titleColor: #676D73;
-$cellBorderColor: #F1F2F2;
-#hall{
-  margin-bottom: $toolbarH;
-  .banner-wrap{
-    border:2px solid $Black;
-    .banner-logo{
-      width: 100%;
-    }
-  }
-  .dota-team {
-    margin-top:10px;
-    h2{
-      padding-left: 10px;
-      margin-bottom: 5px;
-      color: $titleColor;
-      i{
-        margin-right: 10px;
-      }
-    }
-    .match-table{
-      .table-body{
-        // background-color: steelblue;
-        background-color: #fff;
-        color: #ccc;
-        font-size: 13px;
-        .cell{
-          display: flex;
-          align-items: center;
-          position: relative;
-          border-bottom: 1px solid $cellBorderColor;
-          .nameAndTag{
-            margin-left: 10px;
-            width: 100%;
-            overflow: hidden;
-            &>p:nth-of-type(1){
-              font-size: 15px;
-              color: darkcyan;
-            }
-          }
-          .create-time{
-            position: absolute;
-            right: 14px;
-            bottom: 6px;
-            font-size: 12px;
-          }
-          .team_avatar{
-            width: 60px;
-            height:40px;
-            background-color: cadetblue;
-          }
-        }
-      }
-    }
-  }
-  .league-list{
-    .cell{
-       padding:5px 5px 5px 0;
-      .league_avatar{
-        width:80px;
-        height:40px;
-        vertical-align: middle;
-      }
-      .league-desc{
-        font-size: 12px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-}
-</style>

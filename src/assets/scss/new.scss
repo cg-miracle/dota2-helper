@@ -1,28 +1,80 @@
 $fontS: 30px;
 $mt: 300px;
-#news{
- .el-carousel__item h3 {
-    color: #475669;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 150px;
-    margin: 0;
-  }
-
-  .el-carousel__item {
-     img{
-        width: 100%;
-     }
-     &:nth-child(2n) {
-        background-color: #99a9bf;
-     }
-     &:nth-child(2n+1) {
-        background-color: #d3dce6;
-  }
+$titleColor: #676D73;
+$cellBorderColor: #F1F2F2;
+.noData{
+  height: 150px;
+  background-color: #fff;
+  line-height: 150px;
+  color: #ddd;
 }
-  
-  .is-active button{
-    background-color: $lightBlue;
+#hall{
+  margin-bottom: $toolbarH;
+  .banner-wrap{
+    border:2px solid $Black;
+    .banner-logo{
+      width: 100%;
+    }
   }
-   
+  .dota-team {
+    margin-top:10px;
+    h2{
+      padding-left: 10px;
+      margin-bottom: 5px;
+      color: $titleColor;
+      i{
+        margin-right: 10px;
+      }
+    }
+    .match-table{
+      .table-body{
+        // background-color: steelblue;
+        background-color: #fff;
+        color: #ccc;
+        font-size: 13px;
+        .cell{
+          display: flex;
+          align-items: center;
+          position: relative;
+          border-bottom: 1px solid $cellBorderColor;
+          .nameAndTag{
+            margin-left: 10px;
+            width: 100%;
+            overflow: hidden;
+            &>p:nth-of-type(1){
+              font-size: 15px;
+              color: darkcyan;
+            }
+          }
+          .create-time{
+            position: absolute;
+            right: 14px;
+            bottom: 6px;
+            font-size: 12px;
+          }
+          .team_avatar{
+            width: 60px;
+            height:40px;
+            background-color: cadetblue;
+          }
+        }
+      }
+    }
+  }
+  .league-list{
+    .cell{
+       padding:5px 5px 5px 0;
+      .league_avatar{
+        width:80px;
+        height:40px;
+        vertical-align: middle;
+      }
+      .league-desc{
+        font-size: 12px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
