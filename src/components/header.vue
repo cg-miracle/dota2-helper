@@ -1,6 +1,6 @@
 <template>
     <header id="head">
-      <span v-if='isBack' class='backbtn' @click='backTo'>返回</span>
+      <i v-if="isBack" class='back-btn el-icon-arrow-left' @click='backfunc'></i>
       <div class="navbar clearfix fix">{{pageType}}</div>
     </header>
 </template>
@@ -13,7 +13,7 @@ export default{
     isBack: Boolean
   },
   methods: {
-    backTo: function () {
+    backfunc: function () {
       util.backTo()
     }
   }
@@ -24,15 +24,16 @@ export default{
 #head{
   z-index: 20;
   position: relative;
-  .backbtn{
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: $navBarH;
-    line-height: $navBarH;
-    color: $white;
-    z-index: 10;
-    padding-left:10px;
+    .back-btn{
+      display: inline-block;
+      position: absolute;
+      top: 7px;
+      left: 20px;
+      width: 30px;
+      height: 30px;
+      color: $white;
+      line-height: 30px;
+      z-index: 30;
   }
   .navbar{
     width: 100%;

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <hd page-type="玩家"></hd>
-    <section id='friends'>
+    <section id='friends' class="main">
       <div class='search-bar'>
         <input v-focus  v-model='dotaid' placeholder='dota2数字ID,多个时,隔开' type="text" class='search-input' >
         <span class='search-btn' @click="getUsers">搜索</span>
@@ -63,13 +63,18 @@ export default {
         }.bind(this))
         axios({
           method: 'get',
+          responseType: 'text',
           url: '/api/ISteamUser/GetPlayerSummaries/v0002/?key=' + util.config.dota2_token + '&steamids=' + steamids
         }).then((res) => {
           // 显示搜索结果
+          console.log(res)
           this.showplayers(res.data)
         }).catch((err) => {
           console.log(err)
-          this.$message(err)
+          this.isLoad = false
+          this.allUsers = []
+          this.boothImg = acer1
+          this.tips = 'steam api 挂了(刷新)'
         })
       } else {
         this.allUsers = []

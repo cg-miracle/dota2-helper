@@ -18,37 +18,19 @@ $radiantColor: rgb(81,140,66); //近卫 颜色
 .winColor{
   background-color: $winColor;
 }
+.ye-line{
+  height: 4px;
+  background: $ShitYellow;
+}
 .container-wrap{
   height: 100%;
 }
-.match-title{
-  position: fixed;
-  left: 0;
-  top: 0;
-  right:0;
-  z-index: 10;
-  height: $titleH;
-  line-height: $titleH;
-  text-align: center;
-  background-color: $Black;
-  color: $white;
-  border-bottom: 4px solid $ShitYellow;
-  .back-btn{
-    display: inline-block;
-    position: absolute;
-    top: 14px;
-    left: 20px;
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-  }
-}
+
 #match-detail{
-   margin-top: 10px;
     height: 100%;
     background-color: #1F2D3D;
-    margin-top: 54px;
-    margin-bottom: 50px;
+    padding-top: 45px;
+    padding-bottom: 50px;
     overflow: scroll;
   .match-wrap{
     & .match-table:nth-of-type(2){

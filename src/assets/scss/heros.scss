@@ -10,12 +10,16 @@ $cob7d: #F6CB7D;
 .co-b7d{
     color: $cob7d;
 }
+.noData{
+  background-color: #37363C;
+}
 #heros{
   display: flex;
   flex-wrap: wrap;
-  padding: $padd-10;
+  padding: 10px 10px 50px 10px;
   justify-content: space-around;
   background-color: $bg;
+  min-height: 100%;
   .title{
     color: $white;
     flex-basis: 100%;

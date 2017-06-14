@@ -1,7 +1,7 @@
 <template>
   <div id="landing">
     <div class="landing-inner">
-       <h1 class="app-title">Dota2 Plus</h1>
+       <h1 class="app-title">Dota2 AMG</h1>
        <p class="version-p">v1.0</p>
        <div class="loading-time">( <span class="number">{{number}}</span> )</div>
     </div>

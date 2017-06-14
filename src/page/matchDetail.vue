@@ -1,10 +1,9 @@
 <template>
   <div class="container-wrap">
-      <div class='match-title'>
-        <i class='back-btn el-icon-arrow-left' @click='backfunc'></i>
-        <p>比赛{{mid}}</p>
-      </div>
-    <section id='match-detail'>
+    <hd is-back="true"
+        :page-type="titleName"></hd>
+    <section id='match-detail' class='main'>
+    <div class="ye-line"></div>
       <loading v-show="!isLoad">dd</loading>
       <section class='match-wrap' v-show="isLoad">
       <!-- 天辉表格 -->
@@ -96,6 +95,7 @@
   export default {
     data () {
       return {
+        titleName: '',
         mid: '', // 比赛id
         players: {
           radiant: [], // 近卫方选手
@@ -119,6 +119,7 @@
     },
     mounted () {
       this.mid = this.$route.params.mid
+      this.titleName = '比赛 ' + this.mid
       this.getAllItems()
       this.getDetail()
     },

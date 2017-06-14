@@ -28,12 +28,13 @@ $padd-10: 10px;
 
 body{
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-    background: #DFE5EA;
 }
-
+webkit,::-webkit-scrollbar{width: 0;}
 .container{
   padding-top: $navBarH;
   height: 100%;
+  position: relative;
+  // overflow-y: scroll;
 }
 
 .scrollHide{
@@ -46,7 +47,8 @@ body{
 }
 
 #app{
-height: 100%;
+  height: 100%;
+  background: #DFE5EA;
 }
 
 //清除浮动
@@ -60,4 +62,42 @@ height: 100%;
 }
 .clearfix {
   *zoom: 1;
+}
+
+.noData{
+  height: 150px;
+  line-height: 150px;
+  color: #ddd;
+  text-align: center;
+}
+.a-tip{
+  margin-top: 79px;
+  color: darkgray;
+  text-align: center;
+}
+@media (min-width: 768px){
+  #app {
+    width: 375px;
+    height: 667px;
+    margin: 50px auto 0 auto;
+    border: 1px solid lightgray;
+  }
+  #head{
+    position: static;
+  }
+  #head .navbar.fix{
+    position: absolute;
+    z-index: 21;
+  }
+  .main{
+    height: 100%;
+    overflow: auto;
+    padding-bottom: 50px;
+  }
+   #app #toolbar{
+    position: absolute;
+  }
+  .container-wrap{
+    position: relative;
+  }
 }

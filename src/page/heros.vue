@@ -1,9 +1,10 @@
 <template>
   <div class="container">
     <hd page-type="英雄"></hd>
-    <section id='heros' class='list-wrap'>
+    <section id='heros' class='list-wrap main' >
     <div class="title">
      <span class='co-9a3'>ALL</span>OF<span class='co-b7d'>HEROS</span>
+     <div class='noData' v-show="isError">steam api 挂了(刷新)</div>
     </div>
       <div v-for='hero in herodatas' class='hero-item'>
         <div class="img-wrap">
@@ -27,7 +28,8 @@ export default {
     return {
       herodatas: [],
       imgurl: '',
-      heroImg: ''
+      heroImg: '',
+      isError: false
     }
   },
   mounted () {
@@ -46,9 +48,12 @@ export default {
             this.herodatas = d.heroes
             console.log(this.herodatas)
             window.localStorage.setItem('heros', JSON.stringify(d))
+          } else {
+            this.isError = true
           }
         }).catch((err) => {
-          console.log(err)
+          console.log('apiError' + err)
+          this.isError = true
         })
       } else {
         this.herodatas = JSON.parse(d).heroes

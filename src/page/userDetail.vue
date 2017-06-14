@@ -1,6 +1,6 @@
 <template>
   <div class="container-wrap">
-    <section id='user-detail'>
+    <section id='user-detail' class='main'>
       <div class='user-info'>
         <i class='back-btn el-icon-arrow-left' @click='backfunc'></i>
         <img class='user-avatar' :src="userInfo.avatarmedium" alt="头像">

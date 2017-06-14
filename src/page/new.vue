@@ -1,22 +1,23 @@
 <template>
 <div class="container">
   <hd page-type="大厅"></hd>
-  <div id="hall">
+  <div id="hall" class="main">
       <!--banner-->
        <el-carousel height="150px" class="banner-wrap">
         <el-carousel-item v-for="item in imgs" :key="item">
           <img :src="item" alt="banner图" class="banner-logo">
         </el-carousel-item>
       </el-carousel>
-       <section class='dota-team'>
+
+      <section class='dota-team'>
           <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>战队(CN)</h2>
-         <section class='match-table'>
+        <section class='match-table'>
             <div class='table-body'>
               <div class='cell' v-for='(team,index) in teams'>
                 <span class="item"><img :src="team.logo" class="team_avatar" alt="战队logo"></span>
                 <div class="nameAndTag">
-                  <p class="item col-C7CBCF">{{team.name}}</p>
-                  <p class="item col-C7CBCF">{{team.tag}}</p>
+                  <p class="item col-C7CBCF">{{team.name ? team.name : '匿名战队' }}</p>
+                  <p class="item col-C7CBCF">{{team.tag ? team.tag : '匿名战队'}}</p>
                 </div>
                 <span class="create-time">{{getFormateTime(team.time_created)}}</span>
               </div>
@@ -26,7 +27,7 @@
       </section>
       <section class='dota-team league-list'>
           <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>联赛</h2>
-         <section class='match-table'>
+        <section class='match-table'>
             <div class='table-body'>
               <div class='cell'>
                 <span class="item"><img :src="leaguelogo" class="league_avatar"></span>
@@ -35,7 +36,7 @@
                   <p class="item col-C7CBCF league-desc">索泰联赛大师赛这个舞台上顶尖的职业战队在全世界的注视下发挥出他们的极限。</p>
                 </div>
               </div>
-               <div class='cell'>
+              <div class='cell'>
                 <span class="item"><img :src="leaguelogo" class="league_avatar"></span>
                 <div class="nameAndTag">
                   <p class="item col-C7CBCF">2017年马尼拉大师赛</p>
@@ -49,7 +50,7 @@
                   <p class="item col-C7CBCF league-desc">Starladder和ImbaTV联袂推出新一赛季的SL i-联赛国际邀请赛</p>
                 </div>
               </div>
-                   <div class='cell'>
+                  <div class='cell'>
                 <span class="item"><img :src="leaguelogo" class="league_avatar"></span>
                 <div class="nameAndTag">
                   <p class="item col-C7CBCF">WCA赛事平台精英赛</p>
@@ -72,8 +73,9 @@ import banner1 from '../assets/images/banner1.png'
 import banner2 from '../assets/images/banner2.png'
 import banner3 from '../assets/images/banner3.jpg'
 import util from '../lib/utils'
-import axios from 'axios'
 import moment from 'moment'
+import 'whatwg-fetch'
+
 export default {
   data () {
     return {
@@ -84,56 +86,40 @@ export default {
     }
   },
   mounted () {
-    // var preMonth = moment().subtract(2, 'months')._d
-    // this.getTeams()
-    var url = '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?format=json&key=' + util.config.dota2_token
-    fetch(url, {
-      method: 'GET'
-    })
-    .then(response => {
-      if (response.status !== 200) {
-         this.isError = true
-         return null
-      } else {
-        return response.text()
-      }
-    })
-    .then(result => {
-      result = result.replace(/(\d{17,})/g, function ($1) { return '\"' + $1 + '\"' })
-      let data = JSON.parse(result)
-      let d = data.result
-      this.getCnTeams(d.teams)
-      // window.localStorage.setItem('teams', JSON.stringify(d))
-    }).catch(err => {
-      this.$message(err)
-      this.isError = true
-      console.error(err)
-    })
+    var d = window.localStorage.getItem('teams')
+    if (!d) {
+      var url = '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?key=' + util.config.dota2_token
+      fetch(url, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      .then(response => {
+        if (response.status !== 200) {
+          this.isError = true
+          return null
+        } else {
+          return response.text()
+        }
+      })
+      .then(result => {
+        // 将结果中超过17位的id 转为字符串 防止精度丢失
+        result = result.replace(/(\d{17,})/g, function ($1) { return '"' + $1 + '"' })
+        let data = JSON.parse(result)
+        let d = data.result
+        this.getCnTeams(d.teams)
+      }).catch(err => {
+        this.isError = true
+        console.error(err)
+      })
+    } else {
+      this.teams = JSON.parse(d)
+    }
   },
   methods: {
     getFormateTime (time) {
       return moment(time * 1000).format('YY/MM/DD')
     },
     getTeams () {
-      var d = window.localStorage.getItem('teams')
-      if (!d) {
-        axios({
-          method: 'get',
-          url: '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?format=json&key=' + util.config.dota2_token
-        }).then((res) => {
-          if (res.data.result.status === 1) {
-            let d = res.data.result
-            this.getCnTeams(d.teams)
-            window.localStorage.setItem('teams', JSON.stringify(d))
-          }
-        }).catch((err) => {
-          console.log(err)
-          this.$message(err)
-        })
-      } else {
-        let teams = JSON.parse(d).teams
-        this.getCnTeams(teams)
-      }
     },
     // 获取中国战队
     getCnTeams (teams) {
@@ -156,10 +142,9 @@ export default {
           value.logo = urls[index]
           return value
         })
-        console.log(self.teams)
         window.localStorage.setItem('teams', JSON.stringify(self.teams))
       }).catch(reason => {
-        console.log(reason)
+        console.error(reason)
       })
     }
   },

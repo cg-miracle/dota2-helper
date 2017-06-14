@@ -5,9 +5,7 @@ var config = {
   dota2_token: '4EC45E0F6BB0435E586BC369FABDBAA2',
   token: '546FA-9D53D-45524-3225E',
   hero_img: 'http://cdn.dota2.com/apps/dota2/images/heroes/', // {hero_img_id}.png'
-  item_img: 'http://cdn.dota2.com/apps/dota2/images/items/', // <name>_lg.png'
-  'heroicon': 'http://cdn.tgp.qq.com/kog/v3/images/hero/',
-  'skillicon': 'http://cdn.tgp.qq.com/kog/v3/images/skillIcon/' // {技能ID}.png'
+  item_img: 'http://cdn.dota2.com/apps/dota2/images/items/' // <name>_lg.png'
 }
 
 function getRealName (name) {

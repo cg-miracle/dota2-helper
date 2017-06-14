@@ -32,7 +32,7 @@ module.exports = {
           target:'http://api.steampowered.com',
           changeOrigin:true,
           pathRewrite:{
-              '^/api':''
+              '^/api':'/api'
         }
     }
     },
