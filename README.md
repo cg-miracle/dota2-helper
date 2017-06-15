@@ -5,6 +5,8 @@
 ## Build Setup
 
 ``` bash
+git clone https://github.com/cg-miracle/dota2-helper.git
+
 # install dependencies
 npm install
 
