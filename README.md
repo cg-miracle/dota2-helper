@@ -1,6 +1,6 @@
-# herohelper
+# dota2-helper
 
-> A Vue.js project
+> 本项目是基于vue全家桶的spa的demo，选择了自己喜欢的dota2主题，api使用的是steam官方api（很卡＝ ＝而且坑很多）。
 
 ## Build Setup
 
@@ -14,17 +14,5 @@ npm run dev
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
-```
-
+## 效果图预览
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
