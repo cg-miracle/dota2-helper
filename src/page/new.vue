@@ -86,40 +86,42 @@ export default {
     }
   },
   mounted () {
-    var d = window.localStorage.getItem('teams')
-    if (!d) {
-      var url = '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?key=' + util.config.dota2_token
-      fetch(url, {
-        method: 'GET',
-        credentials: 'include'
-      })
-      .then(response => {
-        if (response.status !== 200) {
-          this.isError = true
-          return null
-        } else {
-          return response.text()
-        }
-      })
-      .then(result => {
-        // 将结果中超过17位的id 转为字符串 防止精度丢失
-        result = result.replace(/(\d{17,})/g, function ($1) { return '"' + $1 + '"' })
-        let data = JSON.parse(result)
-        let d = data.result
-        this.getCnTeams(d.teams)
-      }).catch(err => {
-        this.isError = true
-        console.error(err)
-      })
-    } else {
-      this.teams = JSON.parse(d)
-    }
+    this.getTeams()
   },
   methods: {
     getFormateTime (time) {
       return moment(time * 1000).format('YY/MM/DD')
     },
     getTeams () {
+      var d = window.localStorage.getItem('teams')
+      if (!d) {
+        var url = '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?key=' + util.config.dota2_token
+        fetch(url, {
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then(response => {
+          if (response.status !== 200) {
+            this.isError = true
+            return null
+          } else {
+            return response.text()
+          }
+        })
+        .then(result => {
+          // 将结果中超过17位的id 转为字符串 防止精度丢失
+          console.log(result)
+          result = result.replace(/(\d{17,})/g, function ($1) { return '"' + $1 + '"' })
+          let data = JSON.parse(result)
+          let d = data.result
+          this.getCnTeams(d.teams)
+        }).catch(err => {
+          this.isError = true
+          console.error(err)
+        })
+      } else {
+        this.teams = JSON.parse(d)
+      }
     },
     // 获取中国战队
     getCnTeams (teams) {
