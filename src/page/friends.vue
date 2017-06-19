@@ -35,7 +35,7 @@
 <script>
 import hd from '../components/header.vue'
 import tb from '../components/toolbar.vue'
-import axios from 'axios'
+import api from '../http/apis'
 import util from '../lib/utils'
 import acer1 from '../assets/images/acer1.gif'
 import acer2 from '../assets/images/acer2.gif'
@@ -61,14 +61,11 @@ export default {
         let steamids = ids.map(function (value) {
           return this.getSteamid(value)
         }.bind(this))
-        axios({
-          method: 'get',
-          responseType: 'text',
-          url: '/api/ISteamUser/GetPlayerSummaries/v0002/?key=' + util.config.dota2_token + '&steamids=' + steamids
-        }).then((res) => {
+        api.user.GetPlayerSummaries({
+          steamids: steamids.join(',')
+        }).then((data) => {
           // 显示搜索结果
-          console.log(res)
-          this.showplayers(res.data)
+          this.showplayers(data)
         }).catch((err) => {
           console.log(err)
           this.isLoad = false

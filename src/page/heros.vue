@@ -20,7 +20,7 @@
 <script>
 import hd from '../components/header.vue'
 import tb from '../components/toolbar.vue'
-import axios from 'axios'
+import api from '../http/apis'
 import util from '../lib/utils'
 
 export default {
@@ -38,19 +38,13 @@ export default {
   methods: {
     getHeros () {
       var d = window.localStorage.getItem('heros')
-      if (!d) {
-        axios({
-          method: 'get',
-          url: '/api/IEconDOTA2_570/GetHeroes/v1?key=' + util.config.dota2_token + '&language=zh'
-        }).then((res) => {
-          if (res.data.result.status === 200) {
-            var d = res.data.result
-            this.herodatas = d.heroes
-            console.log(this.herodatas)
-            window.localStorage.setItem('heros', JSON.stringify(d))
-          } else {
-            this.isError = true
-          }
+      if (!d) { // language=zh
+        api.IEcon.GetHeroes({
+          language: 'zh'
+        }).then((data) => {
+          var d = data.result
+          this.herodatas = d.heroes
+          window.localStorage.setItem('heros', JSON.stringify(d))
         }).catch((err) => {
           console.log('apiError' + err)
           this.isError = true

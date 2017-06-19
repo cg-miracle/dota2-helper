@@ -74,8 +74,12 @@ webkit,::-webkit-scrollbar{width: 0;}
   margin-top: 79px;
   color: darkgray;
   text-align: center;
+  display: none;
 }
 @media (min-width: 768px){
+  .a-tip{
+    display: block;
+  }
   #app {
     width: 375px;
     height: 667px;
@@ -100,4 +104,5 @@ webkit,::-webkit-scrollbar{width: 0;}
   .container-wrap{
     position: relative;
   }
+
 }

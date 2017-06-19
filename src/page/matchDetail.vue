@@ -1,6 +1,6 @@
 <template>
   <div class="container-wrap">
-    <hd is-back="true"
+    <hd :is-back=true
         :page-type="titleName"></hd>
     <section id='match-detail' class='main'>
     <div class="ye-line"></div>
@@ -88,7 +88,7 @@
   import hd from '../components/header.vue'
   import tb from '../components/toolbar.vue'
   import loading from '../components/loading.vue'
-  import axios from 'axios'
+  import api from '../http/apis'
   import util from '../lib/utils'
   import defaultLogo from '../assets/images/defaultuser.png'
 
@@ -126,14 +126,11 @@
     methods: {
       // 获取比赛详情
       getDetail () {
-        axios({
-          method: 'get',
-          url: '/api/IDOTA2Match_570/GetMatchDetails/v1?key=' + util.config.dota2_token + '&match_id=' + this.mid
-        }).then((res) => {
-          let details = res.data.result
+        api.match.GetMatchDetails({
+          match_id: this.mid
+        }).then((data) => {
+          let details = data.result
           this.getData(details)
-        }).catch((err) => {
-          console.log(err)
         })
       },
       // 获取数据
@@ -234,15 +231,11 @@
       getAllItems () {
         var d = window.localStorage.getItem('allitems')
         if (!d) {
-          axios({
-            method: 'get',
-            url: '/api/IEconDOTA2_570/GetGameItems/v1?key=' + util.config.dota2_token
-          }).then((res) => {
-            let items = res.data.result.items
+          api.IEcon.GetGameItems()
+          .then((data) => {
+            let items = data.result.items
             this.allItems = items
             window.localStorage.setItem('allitems', JSON.stringify(items))
-          }).catch((err) => {
-            console.log(err)
           })
         } else {
           this.allItems = JSON.parse(d)

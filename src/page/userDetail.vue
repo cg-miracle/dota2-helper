@@ -50,7 +50,7 @@
 <script>
   import hd from '../components/header.vue'
   import tb from '../components/toolbar.vue'
-  import axios from 'axios'
+  import api from '../http/apis'
   import util from '../lib/utils'
   import loading from '../components/loading.vue'
   import defaultLogo from '../assets/images/defaultuser.png'
@@ -91,27 +91,21 @@
     methods: {
       // 获取用户信息 头像，数字ID等
       getUsers () { // 221829218
-        let steamids = [this.sid]
-        axios({
-          method: 'get',
-          url: '/api/ISteamUser/GetPlayerSummaries/v0002/?key=' + util.config.dota2_token + '&steamids=' + steamids
-        }).then((res) => {
-          this.userInfo = res.data.response.players[0]
-        }).catch((err) => {
-          console.log(err)
+        api.user.GetPlayerSummaries({
+          steamids: this.sid
+        }).then((data) => {
+          this.userInfo = data.response.players[0]
         })
       },
-      // 获取最近5场比赛的 比赛id
+      // 获取最近5场比赛的 比赛id GetMatchHistory
       getmatchIds () {
         let accountid = this.getDotaid(this.sid)
-        axios({
-          method: 'get',
-          url: '/api/IDOTA2Match_570/GetMatchHistory/v1?key=' + util.config.dota2_token + '&matches_requested=5&account_id=' + accountid
-        }).then((res) => {
-          if (res.data.result.status === 15) {
-            this.$message('此用户关闭信息共享')
-          } else {
-            let matches = res.data.result.matches
+        api.match.GetMatchHistory({
+          account_id: accountid,
+          matches_requested: 5
+        }).then((data) => {
+          if (data) {
+            let matches = data.result.matches
             this.matchIds = matches.map(function (value) {
               return value.match_id
             })
@@ -140,15 +134,13 @@
       // 获取最近5场比赛的详情
       getDetailAjax (id) {
         return new Promise((resolve, reject) => {
-          axios({
-            method: 'get',
-            url: '/api/IDOTA2Match_570/GetMatchDetails/v1?key=' + util.config.dota2_token + '&match_id=' + id
-          }).then((res) => {
-            let details = res.data.result
+          api.match.GetMatchDetails({
+            match_id: id
+          }).then((data) => {
+            let details = data.result
             this.matchDetils.push(details)
             resolve('ok')
           }).catch((err) => {
-            console.log(err)
             reject(err)
           })
         })
@@ -186,9 +178,6 @@
         this.$nextTick(function () {
           this.isLoad = true
         })
-      },
-      getSteamid (dotaid) {
-        return util.dotaidToSteamid(dotaid)
       },
       getDotaid (steamid) {
         return util.steamidToDotaid(steamid)

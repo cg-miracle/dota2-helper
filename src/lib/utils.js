@@ -1,19 +1,9 @@
 var Long = require('long')
-var axios = require('axios')
+import api from '../http/apis'
 
 var config = {
-  dota2_token: '4EC45E0F6BB0435E586BC369FABDBAA2',
-  token: '546FA-9D53D-45524-3225E',
   hero_img: 'http://cdn.dota2.com/apps/dota2/images/heroes/', // {hero_img_id}.png'
   item_img: 'http://cdn.dota2.com/apps/dota2/images/items/' // <name>_lg.png'
-}
-
-function getRealName (name) {
-  return name.replace('npc_dota_hero_', '')
-}
-
-function getRealItemName (name) {
-  return name.replace('item_', '')
 }
 
 exports.getLastTimeStr = diff => {
@@ -41,6 +31,14 @@ exports.getLastTimeStr = diff => {
   return content
 }
 
+function getRealName (name) {
+  return name.replace('npc_dota_hero_', '')
+}
+
+function getRealItemName (name) {
+  return name.replace('item_', '')
+}
+
 /**
  * obj 英雄name
  * 返回英雄头像 suffix ( eb sb lg getHeroAvatar vert)
@@ -55,6 +53,7 @@ exports.getHeroAvatar = (name, suffix) => {
   return config.hero_img + name + suffix
 }
 
+// 获得道具图片
 exports.getItemAvatar = (name) => {
   name = getRealItemName(name)
   return config.item_img + name + '_lg.png'
@@ -94,18 +93,13 @@ var getHeroNameArr = (heros, id) => {
 exports.getHeroNameFromId = (id, callback) => {
   var d = window.localStorage.getItem('heros')
   if (!d) {
-    axios({
-      method: 'get',
-      url: '/api/IEconDOTA2_570/GetHeroes/v1?key=' + config.dota2_token + '&language=zh'
-    }).then((res) => {
-      if (res.data.result.status === 200) {
-        let d = res.data.result
-        let name = getHeroNameArr(d.heros, id)
-        window.localStorage.setItem('heros', JSON.stringify(d))
-        callback(name[0])
-      }
-    }).catch((err) => {
-      console.log(err)
+    api.IEcon.GetHeroes({
+      language: 'zh'
+    }).then((data) => {
+      let d = data.result
+      let name = getHeroNameArr(d.heros, id)
+      window.localStorage.setItem('heros', JSON.stringify(d))
+      callback(name[0])
     })
   } else {
     let name = getHeroNameArr(JSON.parse(d).heroes, id)
@@ -116,11 +110,11 @@ exports.getHeroNameFromId = (id, callback) => {
 // 获取战队图片
 exports.getTeamLogo = (ugcid) => {
   return new Promise((resolve, reject) => {
-    axios({
-      method: 'get',
-      url: '/api/ISteamRemoteStorage/GetUGCFileDetails/v1/?key=' + config.dota2_token + '&ugcid=' + ugcid + '&appid=570'
-    }).then((res) => {
-      let d = res.data.data
+    api.IEcon.GetUGCFileDetails({
+      ugcid: ugcid,
+      appid: 570
+    }).then((data) => {
+      let d = data.data
       let url = d.url
       resolve(url)
     }).catch((err) => {
@@ -132,10 +126,8 @@ exports.getTeamLogo = (ugcid) => {
 
 // 获取用户信息 头像，数字ID等
 exports.getUsers = (sid, callback) => { // 221829218
-  let steamids = [sid]
-  axios({
-    method: 'get',
-    url: '/api/ISteamUser/GetPlayerSummaries/v0002/?key=' + config.dota2_token + '&steamids=' + steamids
+  api.user.GetPlayerSummaries({
+    steamids: sid
   }).then((res) => {
     let userInfo = res.data.response.players[0]
     callback(null, userInfo)

@@ -8,7 +8,6 @@
           <img :src="item" alt="banner图" class="banner-logo">
         </el-carousel-item>
       </el-carousel>
-
       <section class='dota-team'>
           <h2><i class="iconfont icon-iconfonthuangguan huangguan"></i>战队(CN)</h2>
         <section class='match-table'>
@@ -73,8 +72,8 @@ import banner1 from '../assets/images/banner1.png'
 import banner2 from '../assets/images/banner2.png'
 import banner3 from '../assets/images/banner3.jpg'
 import util from '../lib/utils'
+import api from '../http/apis'
 import moment from 'moment'
-import 'whatwg-fetch'
 
 export default {
   data () {
@@ -95,18 +94,8 @@ export default {
     getTeams () {
       var d = window.localStorage.getItem('teams')
       if (!d) {
-        var url = '/api/IDOTA2Match_570/GetTeamInfoByTeamID/v1?key=' + util.config.dota2_token
-        fetch(url, {
-          method: 'GET',
-          credentials: 'include'
-        })
-        .then(response => {
-          if (response.status !== 200) {
-            this.isError = true
-            return null
-          } else {
-            return response.text()
-          }
+        api.match.GetTeamInfoByTeamID({
+          isString: true
         })
         .then(result => {
           // 将结果中超过17位的id 转为字符串 防止精度丢失
